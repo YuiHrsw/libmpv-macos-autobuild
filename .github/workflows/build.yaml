@@ -1,0 +1,42 @@
+name: Build shared libmpv and extract deps
+
+on:
+  workflow_dispatch:  # 仅在手动触发时运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive  # 递归获取子模块
+
+      - name: Install dependencies
+        run: chmod +x install-deps.sh && ./install-deps.sh
+
+      - name: Build libmpv
+        run: chmod +x build.sh && ./build.sh $PWD/build-out
+
+      - name: Extract
+        run: python3 extract.py $PWD/build-out/lib/libmpv.2.dylib $PWD/libs
+
+      - name: Get architecture and mpv githash
+        id: vars
+        run: |
+          echo "ARCH=$(uname -m)" >> $GITHUB_ENV
+          cd mpv
+          MPV_GIT_HASH=$(git rev-parse HEAD)
+          echo "MPV_GIT_HASH=$MPV_GIT_HASH" >> $GITHUB_ENV
+          cd ..
+
+      - name: Create archive
+        run: |
+          tar -czf libmpv-macos-${{ env.ARCH }}-${{ env.MPV_GIT_HASH }}.tar.gz -C $PWD/libs .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: libmpv-macos-${{ env.ARCH }}-${{ env.MPV_GIT_HASH }}.tar.gz
+          path: libmpv-macos-${{ env.ARCH }}-${{ env.MPV_GIT_HASH }}.tar.gz
