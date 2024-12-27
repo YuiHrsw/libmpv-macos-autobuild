@@ -5,9 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: 
-      - macos-13
-      - macos-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout repository
