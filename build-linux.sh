@@ -12,15 +12,20 @@ fi
 
 cd mpv
 
-# clone exactly the oldest libplacebo we want to support
-rm -rf subprojects
-mkdir -p subprojects
-git clone https://code.videolan.org/videolan/libplacebo.git \
-    --recurse-submodules --shallow-submodules \
-    --depth=1 --branch v6.338 subprojects/libplacebo \
+MPV_INSTALL_PREFIX="$1"
+MPV_VARIANT="${TRAVIS_OS_NAME}"
 
-meson setup build $common_args \
- -Dlua=enabled -Dx11=enabled
+if [[ -d "./build/${MPV_VARIANT}" ]] ; then
+    rm -rf "./build/${MPV_VARIANT}"
+fi
+
+CC="gcc-14" \
+meson setup build \
+  --werror -Dlibmpv=true -Dtests=false \
+  -Dprefix="${MPV_INSTALL_PREFIX}" \
+  -Dlua=enabled -Dx11=enabled -Dvapoursynth=disabled
+
 meson compile -C build
+meson install -C build
 
 cd ..
