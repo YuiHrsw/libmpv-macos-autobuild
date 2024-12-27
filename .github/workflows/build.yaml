@@ -5,9 +5,10 @@ on:
 
 jobs:
   build:
-    runs-on: 
-     - "macos-latest"
-     - "macos-13"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-13, macos-latest]  # 定义要运行的 macOS 版本
 
 
     steps:
