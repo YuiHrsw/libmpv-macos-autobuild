@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # 仅在手动触发时运行
 
 jobs:
-  build:
+  build-macOS:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -18,13 +18,13 @@ jobs:
           submodules: recursive  # 递归获取子模块
 
       - name: Install dependencies
-        run: chmod +x install-deps.sh && ./install-deps.sh
+        run: chmod +x install-deps-macos-brew.sh && ./install-deps-macos-brew.sh
 
       - name: Build libmpv
-        run: chmod +x build.sh && ./build.sh $PWD/build-out
+        run: chmod +x build-macos.sh && ./build-macos.sh $PWD/build-out
 
       - name: Extract
-        run: python3 extract.py $PWD/build-out/lib/libmpv.2.dylib $PWD/libs
+        run: python3 extract-macos.py $PWD/build-out/lib/libmpv.2.dylib $PWD/libs
 
       - name: Get architecture and mpv githash
         id: vars
