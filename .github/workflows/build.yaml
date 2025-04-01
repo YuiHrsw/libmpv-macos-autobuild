@@ -40,7 +40,7 @@ jobs:
           tar -czf libmpv-macos-${{ env.ARCH }}-${{ env.MPV_GIT_HASH }}.tar.gz -C $PWD/libs .
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: libmpv-macos-${{ env.ARCH }}-${{ env.MPV_GIT_HASH }}.tar.gz
           path: libmpv-macos-${{ env.ARCH }}-${{ env.MPV_GIT_HASH }}.tar.gz
